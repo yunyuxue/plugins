@@ -1028,7 +1028,11 @@ public class AppServiceServiceImpl extends ServiceImpl<AppServiceMapper, AppServ
         projectHook.setTagPushEvents(true);
         projectHook.setEnableSslVerification(true);
         projectHook.setProjectId(projectId);
-        String uri = !gatewayUrl.endsWith("/") ? gatewayUrl + "/hook" : gatewayUrl + "hook";
+        // String uri = !gatewayUrl.endsWith("/") ? gatewayUrl + "/hook" : gatewayUrl + "hook";
+        // 修复流水线创建应用服务时 "Invalid url given" 问题。
+        // 具体参考 https://t.goodrain.com/d/8380-pipelineinvalid-url-given
+        String gitlabUrl = appServiceAddReq.getUrl();
+        String uri = !gitlabUrl.endsWith("/") ? gitlabUrl + "/hook" : gitlabUrl + "hook";
         projectHook.setUrl(uri);
 //        List<ProjectHook> projectHookDTOS = hookService.listProjectHook(projectId, PlatFormConstraint.GITLAB_ROOT_USER_ID, appServiceAddReq.getUrl(), appServiceAddReq.getToken(), appServiceAddReq.getUsername(), appServiceAddReq.getPassword());
         hookService.createProjectHook(projectId, projectHook,  appServiceAddReq.getUrl(), appServiceAddReq.getToken(), appServiceAddReq.getUsername(), appServiceAddReq.getPassword(), PlatFormConstraint.GITLAB_ROOT_USER_ID);
